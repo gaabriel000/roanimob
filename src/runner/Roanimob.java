@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package roanimob;
+package runner;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,14 +13,13 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author gabriel
+ * @author Gabriel
  */
 public class Roanimob extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
-        
+        Parent root = FXMLLoader.load(getClass().getResource("/view/template.fxml"));
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
