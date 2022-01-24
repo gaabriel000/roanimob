@@ -5,24 +5,28 @@
  */
 package controller;
 
+import model.MainContainer;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
-public class MainController implements Initializable {
+/**
+ * FXML Controller class
+ *
+ * @author gabriel
+ */
+public class LocadorImovelController implements Initializable, ScreenInterface {
 
-    @FXML
-    private Font x3;
-
-    @FXML
-    private Color x4;
-
+    MainContainer parentController;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
 
+    @Override
+    public void setScreenParent(MainContainer mainController) {
+        parentController = mainController;
+    }
+    
 }

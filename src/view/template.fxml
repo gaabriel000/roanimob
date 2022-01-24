@@ -15,7 +15,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TemplateController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -23,7 +23,7 @@
           <items>
                   <Menu mnemonicParsing="false" text="Cadastro...">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Locador" />
+                      <MenuItem mnemonicParsing="false" onAction="#cadastroLocadorImovel" text="Locador/Imóvel" />
                         <MenuItem mnemonicParsing="false" text="Locatário" />
                     </items>
                   </Menu>
@@ -69,7 +69,7 @@
                <graphic>
                   <MenuButton mnemonicParsing="false" prefHeight="46.0" prefWidth="120.0" text="Cadastro...">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Locador" />
+                      <MenuItem mnemonicParsing="false" onAction="#cadastroLocadorImovel" text="Locador/Imóvel" />
                       <MenuItem mnemonicParsing="false" text="Locatario" />
                     </items>
                   </MenuButton>
