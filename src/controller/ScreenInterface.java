@@ -12,7 +12,5 @@ import model.MainContainer;
  * @author Gabriel
  */
 public interface ScreenInterface {
-    
     public void setScreenParent(MainContainer mainController);
-    
 }

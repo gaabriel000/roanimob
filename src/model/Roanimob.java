@@ -30,7 +30,7 @@ public class Roanimob extends Application {
         mainContainer.loadScreen(Roanimob.locadorImovelID, Roanimob.locadorImovel); 
         
         // This is the main screen, the background template.
-        mainContainer.setScreen(template);
+        mainContainer.setScreen(templateID);
         
         Group root = new Group();
         root.getChildren().addAll(mainContainer);

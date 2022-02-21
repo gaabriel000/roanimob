@@ -69,9 +69,7 @@ public class MainContainer extends StackPane {
                             }
                         }));
                 fade.play();
-
             } else {
-                setOpacity(0.0);
                 getChildren().add(screens.get(name));
                 Timeline fadeIn = new Timeline();
                 fadeIn.play();
