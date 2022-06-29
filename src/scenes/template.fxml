@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.SubScene?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -8,9 +9,12 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
@@ -98,22 +102,35 @@
       </MenuBar>
     <SplitPane dividerPositions="0.8251670378619154" focusTraversable="true" prefHeight="488.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
-      <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="493.0" prefWidth="735.0" />
+      <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="493.0" prefWidth="735.0">
+               <children>
+                  <TabPane prefHeight="493.0" prefWidth="737.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Untitled Tab 1">
+                           <content>
+                              <SubScene height="461.0" width="738.0">
+                                <root>
+                                  <Region />
+                                </root>
+                              </SubScene>
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children></AnchorPane>
         <AnchorPane prefHeight="493.0" prefWidth="174.0" />
       </items>
     </SplitPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
       <children>
-        <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
-          <font>
-            <Font size="11.0" fx:id="x3" />
-          </font>
-          <textFill>
-            <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-          </textFill>
-        </Label>
         <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-        <Label font="$x3" maxWidth="-1.0" text="Roanimob" textFill="$x4" HBox.hgrow="NEVER" />
+        <Label maxWidth="-1.0" text="Roanimob" HBox.hgrow="NEVER">
+               <font>
+            <Font size="11.0" fx:id="x3" />
+               </font>
+               <textFill>
+            <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
+               </textFill></Label>
       </children>
       <padding>
         <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
