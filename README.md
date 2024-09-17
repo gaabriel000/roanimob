@@ -9,13 +9,11 @@ Este projeto é o backend do sistema **roanimob**, desenvolvido com **PHP** e o 
 1. Adicione o repositório `ondrej/php`:
    ```bash
    sudo add-apt-repository ppa:ondrej/php
-   sudo apt update
+   sudo apt update```
 
-    Instale o PHP 8.3:
-
-    bash
-
-sudo apt install php8.3 php8.3-fpm php8.3-cli
+2. Instale o PHP 8.3:
+    ```bash
+sudo apt install php8.3 php8.3-fpm php8.3-cli```
 
 Configure o Apache para usar PHP 8.3 com FastCGI:
 
