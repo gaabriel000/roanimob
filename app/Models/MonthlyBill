@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class MonthlyBill extends Model
+{
+    protected $fillable = [
+        'due_date',
+        'paid_amount',
+        'contract_id',
+        'rental_charge_id',
+        'status'
+    ];
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class);
+    }
+
+    public function rentalCharges()
+    {
+        return $this->hasMany(RentalCharge::class);
+    }
+}
