@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use App\Services\PersonService;
-use App\Validators\PersonValidator;
+use Illuminate\Http\Request;
 
 class PersonController extends Controller
 {
@@ -15,15 +15,19 @@ class PersonController extends Controller
         $this->personService = $personService;
     }
 
-    public function create(Request $request)
-    {
-        $person = $this->personService->create($request);
-        return response()->json($person, 201);
-    }
-
     public function query()
     {
         return 'welcome';
+    }
+
+    public function create(Request $request)
+    {
+        return $this->personService->create($request);
+    }
+
+    public function update(Request $request)
+    {
+        return 'update';
     }
 
     public function delete()

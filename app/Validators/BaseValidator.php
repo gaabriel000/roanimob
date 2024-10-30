@@ -3,6 +3,7 @@
 namespace App\Validators;
 
 use Illuminate\Support\Facades\Validator;
+use App\Utils\CaseConverter;
 
 abstract class BaseValidator
 {

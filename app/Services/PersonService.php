@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\PersonRepository;
+use App\Validators\PersonValidator;
 
 class PersonService
 {
@@ -22,6 +23,7 @@ class PersonService
             return response()->json($validationResult['errors'], 400);
         }
 
-        return $this->contractRepository->create($request->all());
+        $person = $this->personRepository->create($request->all());
+        return response()->json($person, 201);
     }
 }

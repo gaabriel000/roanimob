@@ -8,6 +8,6 @@ class PersonRepository
 {
     public function create(array $data)
     {
-        return Person::create($data);
+        return $data;
     }
 }
