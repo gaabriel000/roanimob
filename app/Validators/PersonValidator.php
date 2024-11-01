@@ -18,7 +18,7 @@ class PersonValidator extends BaseValidator
             'tax_id' => 'required|numeric|max:50',
             'tax_type' => ['required', new EnumKey(DocumentType::class)],
             'document_number' => 'nullable|numeric',
-            'birth_date' => 'required|date_format:d-m-Y'
+            'birth_date' => 'required|date_format:Y-m-d'
         ];
     }
 
@@ -39,7 +39,7 @@ class PersonValidator extends BaseValidator
             'tax_type.required' => 'O campo taxType é obrigatório e deve ser um dos tipos válidos: CPF, CNPJ ou OTHER.',
             'document_number.numeric' => 'O campo documentNumber deve conter apenas números.',
             'birth_date.required' => 'O campo birthDate é obrigatório.',
-            'birth_date.date_format' => 'O campo birthDate deve estar no formato dd-mm-aaaa.'
+            'birth_date.date_format' => 'O campo birthDate deve estar no formato yyyy-MM-dd.'
         ];
     }
 }

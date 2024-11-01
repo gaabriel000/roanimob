@@ -3,34 +3,26 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\PropertyStatus;
 
-class CreatePropertiesTable extends Migration
+return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('properties', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
+            $table->uuid('id')->primary();
+            $table->string('title', 255);
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->string('location');
-            $table->boolean('status')->default(true); // Ativo ou inativo
+            $table->enum('status', array_column(PropertyStatus::cases(), 'name'));
+            $table->uuid('address_id');
             $table->timestamps();
+
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('properties');
     }
-}
+};

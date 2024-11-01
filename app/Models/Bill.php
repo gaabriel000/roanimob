@@ -9,9 +9,8 @@ class Bill extends Model
     protected $fillable = [
         'due_date',
         'paid_amount',
-        'contract_id',
-        'charge_id',
-        'status'
+        'status',
+        'charge_id'
     ];
 
     public function contract()

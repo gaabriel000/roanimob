@@ -14,7 +14,8 @@ abstract class Person extends Model
         'tax_id',
         'tax_type',
         'document_number',
-        'birth_date'
+        'birth_date',
+        'address_id'
     ];
 
     public function getFullNameAttribute()
