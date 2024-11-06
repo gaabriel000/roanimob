@@ -42,7 +42,7 @@ Se precisar de assistência adicional, entre em contato pelo e-mail: [gabrielroa
     ```bash
     php -v
 
-3. Configuração do Virtual Host com Laravel
+5. Configuração do Virtual Host com Laravel no arquivo /etc/apache2/sites-available/roanimob.conf. Lembre-se de alterar a porta 80 caso você opte por uma porta personalizada.
     ```bash
     <VirtualHost *:80>
         ServerName roanimob.local
@@ -59,7 +59,11 @@ Se precisar de assistência adicional, entre em contato pelo e-mail: [gabrielroa
         CustomLog ${APACHE_LOG_DIR}/roanimob-access.log combined
     </VirtualHost>
 
-5. Reinicie o Apache para aplicar as configurações:
+6. Caso opte por uma porta personalizada, adicione a linha no arquivo /etc/apache2/ports.conf para o apache redirecionar para essa porta.
+    ```bash
+    Listen 80XX
+
+7. Reinicie o Apache para aplicar as configurações:
     ```bash
     sudo systemctl restart apache2
     
