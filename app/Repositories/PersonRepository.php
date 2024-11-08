@@ -13,7 +13,7 @@ class PersonRepository
 
     public function update(array $data)
     {
-        $person = Person::findOr($data['id'], function() {
+        $person = Person::findOr($data['id'], function () {
             return null;
         });
 
@@ -23,7 +23,7 @@ class PersonRepository
 
     public function delete($id)
     {
-        $person = Person::findOr($id, function() {
+        $person = Person::findOr($id, function () {
             return null;
         });
 
@@ -33,11 +33,11 @@ class PersonRepository
     public function findByAttributes(array $attributes)
     {
         $query = Person::query();
-        
+
         foreach ($attributes as $key => $value) {
             $query->where($key, $value);
         }
-        
+
         return $query->get()->toArray();
     }
 }
