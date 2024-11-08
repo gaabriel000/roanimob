@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('title', 255);
             $table->text('description')->nullable();
             $table->enum('status', array_column(PropertyStatus::cases(), 'name'));
+            $table->decimal('display_price', 10, 2);
             $table->uuid('address_id');
             $table->timestamps();
 

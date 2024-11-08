@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum PropertyStatus: string
 {
-    case OPEN = 'Livre';
+    case OPEN = 'Disponível';
     case RENTED = 'Alugada';
-    case RESERVED = 'Reservada';
-    case BLOCKED = 'Bloqueada';
+    case CONTRACT = 'Contrato';
+    case DISABLED = 'Indisponível';
 }
