@@ -2,42 +2,42 @@
 
 namespace App\Repositories;
 
-use App\Models\Person;
+use App\Models\Address;
 
-class PersonRepository
+class AddressRepository
 {
     public function create(array $data)
     {
-        return Person::create($data);
+        return Address::create($data);
     }
 
     public function update(array $data)
     {
-        $person = Person::findOr($data['id'], function() {
+        $address = Address::findOr($data['id'], function() {
             return null;
         });
 
-        $person->update($data);
-        return $person;
+        $address->update($data);
+        return $address;
     }
 
     public function delete($id)
     {
-        $person = Person::findOr($id, function() {
+        $address = Address::findOr($id, function() {
             return null;
         });
 
-        $person->delete();
+        $address->delete();
     }
 
     public function findByAttributes(array $attributes)
     {
-        $query = Person::query();
-        
+        $query = Address::query();
+
         foreach ($attributes as $key => $value) {
             $query->where($key, $value);
         }
-        
+
         return $query->get()->toArray();
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 abstract class Person extends Model
 {
     protected $fillable = [
+        'id',
         'first_name',
         'last_name',
         'email',
@@ -17,9 +18,4 @@ abstract class Person extends Model
         'birth_date',
         'address_id'
     ];
-
-    public function getFullNameAttribute()
-    {
-        return "{$this->first_name} {$this->last_name}";
-    }
 }

@@ -15,23 +15,23 @@ class PersonController extends Controller
         $this->personService = $personService;
     }
 
-    public function query()
-    {
-        return 'welcome';
-    }
-
     public function create(Request $request)
     {
         return $this->personService->create($request);
     }
 
-    public function update(Request $request)
+    public function delete(Request $request)
     {
-        return 'update';
+        return $this->personService->delete($request);
     }
 
-    public function delete()
+    public function update(Request $request)
     {
-        return 'delete';
+        return $this->personService->update($request);
+    }
+
+    public function query(Request $request)
+    {
+        return $this->personService->query($request);
     }
 }

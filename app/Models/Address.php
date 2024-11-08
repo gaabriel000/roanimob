@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Address extends Model
 {
     protected $fillable = [
+        'id',
         'street',
         'number',
         'is_no_number',
@@ -17,9 +18,4 @@ class Address extends Model
         'state',
         'country'
     ];
-
-    public function addressable()
-    {
-        return $this->morphTo();
-    }
 }

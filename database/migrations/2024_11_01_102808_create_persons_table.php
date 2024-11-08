@@ -13,8 +13,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('first_name', 255);
             $table->string('last_name', 255);
-            $table->string('email', 255);
-            $table->string('phone_number', 50);
+            $table->string('email', 255)->nullable();
+            $table->string('phone_number', 50)->nullable();
             $table->string('tax_id', 50);
             $table->enum('tax_type', array_column(DocumentType::cases(), 'name'));
             $table->string('document_number', 50);
