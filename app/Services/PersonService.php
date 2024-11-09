@@ -7,8 +7,6 @@ use App\Services\AddressService;
 use App\Utils\Converter;
 use App\Validators\PersonValidator;
 
-use Illuminate\Support\Facades\Log;
-
 class PersonService
 {
     private PersonRepository $personRepository;

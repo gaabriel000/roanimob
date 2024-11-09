@@ -50,7 +50,7 @@ class PersonValidator extends BaseValidator
 
         return $rules;
     }
-    
+
     public function messages(): array
     {
         $addressValidator = new AddressValidator();
