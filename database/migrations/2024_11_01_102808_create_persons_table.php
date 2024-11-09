@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('phone_number', 50)->nullable();
             $table->string('tax_id', 50);
             $table->enum('tax_type', array_column(DocumentType::cases(), 'name'));
-            $table->string('document_number', 50);
-            $table->date('birth_date');
-            $table->uuid('address_id');
+            $table->string('document_number', 50)->nullable();
+            $table->date('birth_date')->nullable();
+            $table->uuid('address_id')->nullable();
             $table->timestamps();
 
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');

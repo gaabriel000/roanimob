@@ -3,25 +3,27 @@
 namespace App\Repositories;
 
 use App\Models\Person;
+use App\Utils\Converter;
 
 class PersonRepository
 {
-    public function create(array $data)
+    public function create(array $data): array
     {
-        return Person::create($data);
+        $person = Person::create($data);
+        return Converter::sortResponseId(Converter::objectToArray($person));
     }
 
-    public function update(array $data)
+    public function update(array $data): array
     {
         $person = Person::findOr($data['id'], function () {
             return null;
         });
 
         $person->update($data);
-        return $person;
+        return Converter::objectToArray($person);
     }
 
-    public function delete($id)
+    public function delete($id): void
     {
         $person = Person::findOr($id, function () {
             return null;
@@ -30,7 +32,7 @@ class PersonRepository
         $person->delete();
     }
 
-    public function findByAttributes(array $attributes)
+    public function findByAttributes(array $attributes): array
     {
         $query = Person::query();
 

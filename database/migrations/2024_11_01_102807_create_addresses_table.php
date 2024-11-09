@@ -17,7 +17,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('street', 50);
             $table->string('number', 10)->nullable();
-            $table->boolean('is_no_number')->default(false);
             $table->string('complement', 255)->nullable();
             $table->string('neighborhood', 255)->nullable();
             $table->string('postal_code', 50)->nullable();

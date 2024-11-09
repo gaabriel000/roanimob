@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Repositories\AddressRepository;
 use App\Validators\AddressValidator;
-use App\Utils\CaseConverter;
+use App\Utils\Converter;
 
 class AddressService
 {
@@ -12,7 +12,7 @@ class AddressService
 
     public function __construct(AddressRepository $addressRepository)
     {
-        $this->AddressRepository = $addressRepository;
+        $this->addressRepository = $addressRepository;
     }
 
     public function create($request)
@@ -25,21 +25,21 @@ class AddressService
             return response()->json($validation_result['errors'], 400);
         }
 
-        $this->createAddress($data);
+        $address = $this->createAddress($data);
+        return response()->json($address, 201);
     }
 
-    private function createAddress($data)
+    public function createAddress($data)
     {
-        $data = CaseConverter::convertKeysToSnakeCase($data);
+        $data = Converter::convertKeysToSnakeCase($data);
         $address = $this->addressRepository->create($data);
 
-        $address = CaseConverter::convertKeysToCamelCase($address);
-        return response()->jon($address, 201);
+        return Converter::convertKeysToCamelCase($address);
     }
 
     public function delete($request)
     {
-        $data = CaseConverter::convertKeysToSnakeCase($request->all());
+        $data = Converter::convertKeysToSnakeCase($request->all());
         $address = $this->addressRepository->delete($data);
 
         if (!$address) {
@@ -51,31 +51,31 @@ class AddressService
 
     public function update($request)
     {
-        $data = CaseConverter::convertKeysToSnakeCase($request->all());
+        $data = Converter::convertKeysToSnakeCase($request->all());
         $address = $this->addressRepository->update($data);
 
         if (!$address) {
             return response()->json(404);
         }
 
-        $address = CaseConverter::convertKeysToCamelCase($address);
+        $address = Converter::convertKeysToCamelCase($address);
         return response()->json($address, 200);
     }
 
     public function query($request)
     {
-        $data = CaseConverter::convertKeysToSnakeCase($request->all());
+        $data = Converter::convertKeysToSnakeCase($request->all());
         $address = $this->queryData($data);
 
         if ($address) {
-            $address = CaseConverter::convertKeysToCamelCase($address);
+            $address = Converter::convertKeysToCamelCase($address);
             return response()->json($address, 200);
         } else {
             return response()->json($address, 404);
         }
     }
 
-    private function queryData($data)
+    public function queryData($data)
     {
         return $this->addressRepository->findByAttributes($data);
     }

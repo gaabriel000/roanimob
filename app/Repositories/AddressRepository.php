@@ -3,25 +3,27 @@
 namespace App\Repositories;
 
 use App\Models\Address;
+use App\Utils\Converter;
 
 class AddressRepository
 {
-    public function create(array $data)
+    public function create(array $data): array
     {
-        return Address::create($data);
+        $address = Address::create($data);
+        return Converter::sortResponseId(Converter::objectToArray($address));
     }
 
-    public function update(array $data)
+    public function update(array $data): array
     {
         $address = Address::findOr($data['id'], function() {
             return null;
         });
 
         $address->update($data);
-        return $address;
+        return Converter::objectToArray($address);
     }
 
-    public function delete($id)
+    public function delete($id): void
     {
         $address = Address::findOr($id, function() {
             return null;
@@ -30,7 +32,7 @@ class AddressRepository
         $address->delete();
     }
 
-    public function findByAttributes(array $attributes)
+    public function findByAttributes(array $attributes): array
     {
         $query = Address::query();
 
@@ -38,6 +40,6 @@ class AddressRepository
             $query->where($key, $value);
         }
 
-        return $query->get()->toArray();
+        return Converter::objectToArray($query->get());
     }
 }

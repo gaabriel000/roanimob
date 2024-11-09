@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Repositories\PersonRepository;
+use App\Services\AddressService;
+use App\Utils\Converter;
 use App\Validators\PersonValidator;
-use App\Utils\CaseConverter;
+
+use Illuminate\Support\Facades\Log;
 
 class PersonService
 {
@@ -27,32 +30,43 @@ class PersonService
             return response()->json($validation_result['errors'], 400);
         }
 
-        $this->createPersonAndAddress($data);
+        $person = $this->createPersonAndAddress($data);
+        return response()->json($person, 201);
     }
 
-    private function createPersonAndAddress($data)
+    public function createPersonAndAddress($data)
     {
-        $address_data = $data['address'];
-        $address_id = $address_data['id'];
+        $addressArray = [];
 
-        if ($address_id) {
-            $address = $this->addressService->query(['id' => $address_id]);
-        } else {
-            $address = $this->addressService->create($address_data);
+        if (array_key_exists('address', $data)) {
+            $address_data = $data['address'];
+            $address_id = array_key_exists('id', $address_data) ? $address_data['id'] : null;
+
+            if ($address_id) {
+                $address = $this->addressService->queryData(['id' => $address_id]);
+                $addressArray = $address[0];
+                // update address
+                $data['address_id'] = $addressArray['id'];
+            } else {
+                $address = $this->addressService->createAddress($address_data);
+                $addressArray = $address;
+                $data['address_id'] = $addressArray['id'];
+            }
         }
 
-        $data['address_id'] = $address->id;
-
-        $data = CaseConverter::convertKeysToSnakeCase($data);
+        $data = Converter::convertKeysToSnakeCase($data);
         $person = $this->personRepository->create($data);
 
-        $person = CaseConverter::convertKeysToCamelCase($person);
-        return response()->json($person, 201);
+        if (isset($addressArray)) {
+            $person['address'] = $addressArray;
+        }
+
+        return Converter::convertKeysToCamelCase($person);
     }
 
     public function delete($request)
     {
-        $data = CaseConverter::convertKeysToSnakeCase($request->all());
+        $data = Converter::convertKeysToSnakeCase($request->all());
         $person = $this->personRepository->delete($data);
 
         if (!$person) {
@@ -64,31 +78,31 @@ class PersonService
 
     public function update($request)
     {
-        $data = CaseConverter::convertKeysToSnakeCase($request->all());
+        $data = Converter::convertKeysToSnakeCase($request->all());
         $person = $this->personRepository->update($data);
 
         if (!$person) {
             return response()->json(404);
         }
 
-        $person = CaseConverter::convertKeysToCamelCase($person);
+        $person = Converter::convertKeysToCamelCase($person);
         return response()->json($person, 200);
     }
 
     public function query($request)
     {
-        $data = CaseConverter::convertKeysToSnakeCase($request->all());
+        $data = Converter::convertKeysToSnakeCase($request->all());
         $person = $this->queryData($data);
 
         if ($person) {
-            $person = CaseConverter::convertKeysToCamelCase($person);
+            $person = Converter::convertKeysToCamelCase($person);
             return response()->json($person, 200);
         } else {
             return response()->json($person, 404);
         }
     }
 
-    private function queryData($data)
+    public function queryData($data)
     {
         return $this->personRepository->findByAttributes($data);
     }

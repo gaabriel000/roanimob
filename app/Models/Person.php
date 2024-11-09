@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class Person extends Model
+class Person extends Model
 {
+    use HasUuids;
+
+    protected $table = 'persons';
+
     protected $fillable = [
         'id',
         'first_name',
