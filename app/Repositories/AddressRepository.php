@@ -36,6 +36,11 @@ class AddressRepository
     {
         $query = Address::query();
 
+        $attributes = array_intersect_key(
+            $attributes,
+            array_flip((new Address())->getFillable())
+        );
+
         foreach ($attributes as $key => $value) {
             $query->where($key, $value);
         }

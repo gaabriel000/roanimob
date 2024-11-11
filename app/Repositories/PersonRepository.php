@@ -13,33 +13,56 @@ class PersonRepository
         return Converter::sortResponseId(Converter::objectToArray($person));
     }
 
-    public function update(array $data): array
+    public function update($id, $request)
     {
-        $person = Person::findOr($data['id'], function () {
-            return null;
-        });
+        $person = Person::find($id);
 
-        $person->update($data);
-        return Converter::objectToArray($person);
+        if (isset($person)) {
+            $person->update($request);
+            return Converter::objectToArray($person);
+        }
+
+        return null;
     }
 
-    public function delete($id): void
+    public function delete($id): bool
     {
-        $person = Person::findOr($id, function () {
-            return null;
-        });
+        $person = Person::find($id);
 
-        $person->delete();
+        if (isset($person)) {
+            $person->delete();
+            return true;
+        }
+
+        return false;
     }
 
-    public function findByAttributes(array $attributes): array
+    public function findByAttributes(array $attributes, bool $include_address = false, int $perPage = 10, int $page = 1): array
     {
         $query = Person::query();
+
+        $attributes = array_intersect_key(
+            $attributes,
+            array_flip((new Person())->getFillable())
+        );
 
         foreach ($attributes as $key => $value) {
             $query->where($key, $value);
         }
 
-        return $query->get()->toArray();
+        if ($include_address === true) {
+            $query->with('address');
+        }
+
+        $result = $query->paginate($perPage, ['*'], 'page', $page);
+
+        return [
+            'data' => $result->items(),
+            'per_page' => $result->perPage(),
+            'count' => $result->count(),
+            'total' => $result->total(),
+            'current_page' => $result->currentPage(),
+            'last_page' => $result->lastPage(),
+        ];
     }
 }

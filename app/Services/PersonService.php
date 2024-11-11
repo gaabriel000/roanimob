@@ -32,7 +32,7 @@ class PersonService
         return response()->json($person, 201);
     }
 
-    public function createPersonAndAddress($data)
+    public function createPersonAndAddress(array $data): array
     {
         $addressArray = [];
 
@@ -42,13 +42,16 @@ class PersonService
 
             if ($address_id) {
                 $address = $this->addressService->queryData(['id' => $address_id]);
-                $addressArray = $address[0];
-                // update address
-                $data['address_id'] = $addressArray['id'];
+
+                if ($address) {
+                    $addressArray = $address[0];
+                    // update address
+                    $data['address_id'] = $addressArray['id'];
+                } else {
+                    $this->createAddress($address_data, $data);
+                }
             } else {
-                $address = $this->addressService->createAddress($address_data);
-                $addressArray = $address;
-                $data['address_id'] = $addressArray['id'];
+                $this->createAddress($address_data, $data);
             }
         }
 
@@ -62,25 +65,31 @@ class PersonService
         return Converter::convertKeysToCamelCase($person);
     }
 
-    public function delete($request)
+    public function createAddress(array $address_data, array &$data): void
     {
-        $data = Converter::convertKeysToSnakeCase($request->all());
-        $person = $this->personRepository->delete($data);
-
-        if (!$person) {
-            return response()->json(404);
-        }
-
-        return response()->json(200);
+        $address = $this->addressService->createAddress($address_data);
+        $addressArray = $address;
+        $data['address_id'] = $addressArray['id'];
     }
 
-    public function update($request)
+    public function delete($id)
+    {
+        $result = $this->personRepository->delete($id);
+
+        if (!$result) {
+            return response()->json(null, 404);
+        }
+
+        return response()->json(null, 200);
+    }
+
+    public function update($id, $request)
     {
         $data = Converter::convertKeysToSnakeCase($request->all());
-        $person = $this->personRepository->update($data);
+        $person = $this->personRepository->update($id, $data);
 
         if (!$person) {
-            return response()->json(404);
+            return response()->json(null, 404);
         }
 
         $person = Converter::convertKeysToCamelCase($person);
@@ -100,8 +109,12 @@ class PersonService
         }
     }
 
-    public function queryData($data)
+    public function queryData(array $data): array
     {
-        return $this->personRepository->findByAttributes($data);
+        $include_address = isset($data['include_address']) && $data['include_address'] === 'true';
+        $perPage = isset($data['per_page']) ? $data['per_page'] : null;
+        $page = isset($data['page']) ? $data['page'] : null;
+
+        return $this->personRepository->findByAttributes($data, $include_address, $perPage, $page);
     }
 }

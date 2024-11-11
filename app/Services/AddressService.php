@@ -29,7 +29,7 @@ class AddressService
         return response()->json($address, 201);
     }
 
-    public function createAddress($data)
+    public function createAddress(array $data): array
     {
         $data = Converter::convertKeysToSnakeCase($data);
         $address = $this->addressRepository->create($data);
@@ -75,7 +75,7 @@ class AddressService
         }
     }
 
-    public function queryData($data)
+    public function queryData(array $data): array
     {
         return $this->addressRepository->findByAttributes($data);
     }

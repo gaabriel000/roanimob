@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,7 @@ class Person extends Model
 
     protected $fillable = [
         'id',
+        'type',
         'first_name',
         'last_name',
         'email',
@@ -23,4 +25,9 @@ class Person extends Model
         'birth_date',
         'address_id'
     ];
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class, 'address_id');
+    }
 }
