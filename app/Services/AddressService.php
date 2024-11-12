@@ -37,29 +37,33 @@ class AddressService
         return Converter::convertKeysToCamelCase($address);
     }
 
-    public function delete($request)
+    public function delete($id)
     {
-        $data = Converter::convertKeysToSnakeCase($request->all());
-        $address = $this->addressRepository->delete($data);
+        $result = $this->addressRepository->delete($id);
 
-        if (!$address) {
-            return response()->json(404);
+        if (!$result) {
+            return response()->json('Address with ID was not found or was already removed: ' . $id, 404);
         }
 
-        return response()->json(200);
+        return response()->json('Address with ID was succesfully removed: ' . $id, 200);
     }
 
-    public function update($request)
+    public function update($id, $request)
     {
         $data = Converter::convertKeysToSnakeCase($request->all());
-        $address = $this->addressRepository->update($data);
+        $address = $this->updateAddress($id, $data);
 
         if (!$address) {
-            return response()->json(404);
+            return response()->json('Address not found with ID: ' . $id, 404);
         }
 
         $address = Converter::convertKeysToCamelCase($address);
         return response()->json($address, 200);
+    }
+
+    public function updateAddress($id, array $data): array
+    {
+        return $this->addressRepository->update($id, $data);
     }
 
     public function query($request)

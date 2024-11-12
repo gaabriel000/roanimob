@@ -34,32 +34,21 @@ class PersonService
 
     public function createPersonAndAddress(array $data): array
     {
-        $addressArray = [];
-
-        if (array_key_exists('address', $data)) {
-            $address_data = $data['address'];
-            $address_id = array_key_exists('id', $address_data) ? $address_data['id'] : null;
-
-            if ($address_id) {
-                $address = $this->addressService->queryData(['id' => $address_id]);
-
-                if ($address) {
-                    $addressArray = $address[0];
-                    // update address
-                    $data['address_id'] = $addressArray['id'];
-                } else {
-                    $this->createAddress($address_data, $data);
-                }
-            } else {
-                $this->createAddress($address_data, $data);
-            }
-        }
-
+        $address_id = null;
         $data = Converter::convertKeysToSnakeCase($data);
-        $person = $this->personRepository->create($data);
 
-        if (isset($addressArray)) {
-            $person['address'] = $addressArray;
+        if (isset($data['address'])) {
+            $address_data = $data['address'];
+
+            if (isset($address_data['id'])) {
+                $address_id = $address_data['id'];
+                $person = $this->personRepository->createAndUpdateAddress($data, $address_data, $address_id);
+            } else {
+                $person = $this->personRepository->createWithAddress($data, $address_data);
+            }
+
+        } else {
+            $person = $this->personRepository->create($data);
         }
 
         return Converter::convertKeysToCamelCase($person);
@@ -77,10 +66,10 @@ class PersonService
         $result = $this->personRepository->delete($id);
 
         if (!$result) {
-            return response()->json(null, 404);
+            return response()->json('Person with ID was not found or was already removed: ' . $id, 404);
         }
 
-        return response()->json(null, 200);
+        return response()->json('Person with ID was succesfully removed: ' . $id, 200);
     }
 
     public function update($id, $request)
@@ -89,7 +78,7 @@ class PersonService
         $person = $this->personRepository->update($id, $data);
 
         if (!$person) {
-            return response()->json(null, 404);
+            return response()->json('Person not found with ID: ' . $id, 404);
         }
 
         $person = Converter::convertKeysToCamelCase($person);
@@ -111,10 +100,10 @@ class PersonService
 
     public function queryData(array $data): array
     {
-        $include_address = isset($data['include_address']) && $data['include_address'] === 'true';
-        $perPage = isset($data['per_page']) ? $data['per_page'] : null;
-        $page = isset($data['page']) ? $data['page'] : null;
+        $query_relation = isset($data['include_address']) && $data['include_address'] === 'true' ? ['address'] : [];
+        $per_page = isset($data['per_page']) ? $data['per_page'] : 10;
+        $page = isset($data['page']) ? $data['page'] : 1;
 
-        return $this->personRepository->findByAttributes($data, $include_address, $perPage, $page);
+        return $this->personRepository->findByAttributes($data, $query_relation, $per_page, $page);
     }
 }

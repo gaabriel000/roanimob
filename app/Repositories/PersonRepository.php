@@ -3,66 +3,45 @@
 namespace App\Repositories;
 
 use App\Models\Person;
+use App\Repositories\AddressRepository;
+use App\Repositories\BaseRepository;
 use App\Utils\Converter;
+use Illuminate\Support\Facades\DB;
 
-class PersonRepository
+class PersonRepository extends BaseRepository
 {
-    public function create(array $data): array
+    private AddressRepository $addressRepository;
+
+    public function __construct(Person $model, AddressRepository $addressRepository)
     {
-        $person = Person::create($data);
+        parent::__construct($model);
+        $this->addressRepository = $addressRepository;
+    }
+
+    public function createWithAddress(array $personData, array $addressData): array
+    {
+        return DB::transaction(function () use ($personData, $addressData) {
+            $address = $this->addressRepository->create($addressData);
+            return $this->createPersonConfigureAddressData($address, $personData);
+        });
+    }
+
+    public function createAndUpdateAddress(array $personData, array $addressData, string $id): array
+    {
+        return DB::transaction(function () use ($personData, $addressData, $id) {
+            $address = $this->addressRepository->update($id, $addressData);
+            return $this->createPersonConfigureAddressData($address, $personData);
+        });
+    }
+
+    private function createPersonConfigureAddressData(array $address, array $personData): array
+    {
+        $personData['address_id'] = $address['id'];
+
+        $person = Person::create($personData);
+        $person->address = $address;
+        unset($person->address_id);
+
         return Converter::sortResponseId(Converter::objectToArray($person));
-    }
-
-    public function update($id, $request)
-    {
-        $person = Person::find($id);
-
-        if (isset($person)) {
-            $person->update($request);
-            return Converter::objectToArray($person);
-        }
-
-        return null;
-    }
-
-    public function delete($id): bool
-    {
-        $person = Person::find($id);
-
-        if (isset($person)) {
-            $person->delete();
-            return true;
-        }
-
-        return false;
-    }
-
-    public function findByAttributes(array $attributes, bool $include_address = false, int $perPage = 10, int $page = 1): array
-    {
-        $query = Person::query();
-
-        $attributes = array_intersect_key(
-            $attributes,
-            array_flip((new Person())->getFillable())
-        );
-
-        foreach ($attributes as $key => $value) {
-            $query->where($key, $value);
-        }
-
-        if ($include_address === true) {
-            $query->with('address');
-        }
-
-        $result = $query->paginate($perPage, ['*'], 'page', $page);
-
-        return [
-            'data' => $result->items(),
-            'per_page' => $result->perPage(),
-            'count' => $result->count(),
-            'total' => $result->total(),
-            'current_page' => $result->currentPage(),
-            'last_page' => $result->lastPage(),
-        ];
     }
 }
