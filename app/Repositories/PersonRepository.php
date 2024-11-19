@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Models\Person;
 use App\Repositories\AddressRepository;
 use App\Repositories\BaseRepository;
-use App\Utils\Converter;
 use Illuminate\Support\Facades\DB;
 
 class PersonRepository extends BaseRepository
@@ -38,10 +37,10 @@ class PersonRepository extends BaseRepository
     {
         $personData['address_id'] = $address['id'];
 
-        $person = Person::create($personData);
-        $person->address = $address;
-        unset($person->address_id);
+        $person = $this->create($personData);
+        $person['address'] = $address;
+        unset($person['address_id']);
 
-        return Converter::sortResponseId(Converter::objectToArray($person));
+        return $person;
     }
 }

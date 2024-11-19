@@ -46,7 +46,6 @@ class PersonService
             } else {
                 $person = $this->personRepository->createWithAddress($data, $address_data);
             }
-
         } else {
             $person = $this->personRepository->create($data);
         }

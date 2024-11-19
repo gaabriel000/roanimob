@@ -6,8 +6,6 @@ use App\Utils\Converter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
-
-
 abstract class BaseRepository
 {
     protected Model $model;
