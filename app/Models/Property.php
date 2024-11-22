@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
 {
-    use HasFactory;
+    use HasUuids;
 
-    // Define a tabela associada, se for diferente do padrão (plural do nome do modelo)
     protected $table = 'properties';
 
-    // Os atributos que podem ser preenchidos via mass assignment
     protected $fillable = [
         'title',
         'description',
@@ -21,13 +20,8 @@ class Property extends Model
         'address_id'
     ];
 
-    public function address()
+    public function address(): BelongsTo
     {
-        return $this->morphOne(Address::class, 'addressable');
-    }
-
-    public function contracts()
-    {
-        return $this->hasMany(Contract::class);
+        return $this->belongsTo(Address::class, 'address_id');
     }
 }

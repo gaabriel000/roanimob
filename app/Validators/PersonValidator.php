@@ -26,29 +26,8 @@ class PersonValidator extends BaseValidator
                 'birth_date' => 'date_format:Y-m-d',
                 'address' => 'nullable|array'
             ],
-            $this->addressRules($addressValidator)
+            $addressValidator->addressRules()
         );
-    }
-
-    private function addressRules(AddressValidator $addressValidator): array
-    {
-        $rules = [];
-
-        foreach ($addressValidator->rules() as $key => $rule) {
-            if (is_array($rule)) {
-                foreach ($rule as $index => $r) {
-                    if ($r === 'required') {
-                        $rule[$index] = 'required_with:address,!null';
-                    }
-                }
-            } else {
-                $rule = preg_replace('/\brequired\b/', 'required_with:address,!null', $rule);
-            }
-
-            $rules["address.$key"] = $rule;
-        }
-
-        return $rules;
     }
 
     public function messages(): array
@@ -71,17 +50,7 @@ class PersonValidator extends BaseValidator
                 'document_number.numeric' => 'O campo documentNumber deve conter apenas números.',
                 'birth_date.date_format' => 'O campo birthDate deve estar no formato yyyy-MM-dd.'
             ],
-            $this->addressMessages($addressValidator)
+            $addressValidator->addressMessages()
         );
-    }
-
-    private function addressMessages(AddressValidator $addressValidator): array
-    {
-        $messages = [];
-        foreach ($addressValidator->messages() as $key => $message) {
-            $messages["address.$key.required_if"] = "O campo $key é obrigatório quando o objeto address está presente.";
-            $messages["address.$key"] = $message;
-        }
-        return $messages;
     }
 }
