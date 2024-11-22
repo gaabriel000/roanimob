@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Utils\Converter;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 abstract class BaseRepository
 {
@@ -72,15 +71,17 @@ abstract class BaseRepository
                     unset($item[$foreignKey]);
                 }
             }
+
+            $item = Converter::convertKeysToCamelCase(Converter::objectToArray($item));
         }
 
         return [
-            'data' => $result->items(),
-            'per_page' => $result->perPage(),
+            'data' => $data,
+            'perPage' => $result->perPage(),
             'count' => $result->count(),
             'total' => $result->total(),
-            'current_page' => $result->currentPage(),
-            'last_page' => $result->lastPage(),
+            'currentPage' => $result->currentPage(),
+            'lastPage' => $result->lastPage(),
         ];
     }
 }

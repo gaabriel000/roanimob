@@ -3,6 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Property;
+use App\Repositories\AddressRepository;
+use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\DB;
 
 class PropertyRepository extends BaseRepository
 {

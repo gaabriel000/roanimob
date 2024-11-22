@@ -14,7 +14,7 @@ class PropertyValidator extends BaseValidator
 
         return array_merge(
             [
-                'title' => 'required|alpha|max:255',
+                'title' => 'required|max:255',
                 'description' => 'max:255',
                 'status' => ['required', new EnumKey(PropertyStatus::class)],
                 'display_price' => 'required|numeric',

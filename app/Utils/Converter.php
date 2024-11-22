@@ -6,12 +6,6 @@ use Illuminate\Support\Str;
 
 class Converter
 {
-    /**
-     * Convert all array keys to snake_case.
-     *
-     * @param array $data
-     * @return array
-     */
     public static function convertKeysToSnakeCase(array $data): array
     {
         $result = [];
@@ -22,12 +16,6 @@ class Converter
         return $result;
     }
 
-    /**
-     * Convert all array keys to camelCase.
-     *
-     * @param array $data
-     * @return array
-     */
     public static function convertKeysToCamelCase(array $data): array
     {
         $result = [];
@@ -38,23 +26,11 @@ class Converter
         return $result;
     }
 
-    /**
-     * Safely convert object properties to an array. Avoid object nesting.
-     *
-     * @param object $data
-     * @return array
-     */
     public static function objectToArray($object): array
     {
         return json_decode(json_encode($object), true);
     }
 
-    /**
-     * Sort array response and top the ID in the object order
-     *
-     * @param array @array
-     * @return array
-     */
     public static function sortResponseId($array): array
     {
         $id = $array['id'];

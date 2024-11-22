@@ -3,19 +3,16 @@
 namespace App\Services;
 
 use App\Repositories\PersonRepository;
-use App\Services\AddressService;
-use App\Utils\Converter;
 use App\Validators\PersonValidator;
+use App\Utils\Converter;
 
 class PersonService
 {
     private PersonRepository $personRepository;
-    private AddressService $addressService;
 
-    public function __construct(PersonRepository $personRepository, AddressService $addressService)
+    public function __construct(PersonRepository $personRepository)
     {
         $this->personRepository = $personRepository;
-        $this->addressService = $addressService;
     }
 
     public function create($request)
@@ -32,7 +29,7 @@ class PersonService
         return response()->json($person, 201);
     }
 
-    public function createPersonAndAddress(array $data): array
+    private function createPersonAndAddress(array $data): array
     {
         $address_id = null;
         $data = Converter::convertKeysToSnakeCase($data);
@@ -53,31 +50,31 @@ class PersonService
         return Converter::convertKeysToCamelCase($person);
     }
 
-    public function createAddress(array $address_data, array &$data): void
-    {
-        $address = $this->addressService->createAddress($address_data);
-        $addressArray = $address;
-        $data['address_id'] = $addressArray['id'];
-    }
-
     public function delete($id)
     {
         $result = $this->personRepository->delete($id);
 
         if (!$result) {
-            return response()->json('Person with ID was not found or was already removed: ' . $id, 404);
+            return response()->json('Pessoa não encontrada ou já removida, ID: ' . $id, 404);
         }
 
-        return response()->json('Person with ID was succesfully removed: ' . $id, 200);
+        return response()->json('Pessoa removida com sucesso, ID: ' . $id, 200);
     }
 
     public function update($id, $request)
     {
-        $data = Converter::convertKeysToSnakeCase($request->all());
+        $data = $request->all();
+        $validator = new PersonValidator();
+        $validation_result = $validator->validate($data, true);
+
+        if (!$validation_result['valid']) {
+            return response()->json($validation_result['errors'], 400);
+        }
+
         $person = $this->personRepository->update($id, $data);
 
         if (!$person) {
-            return response()->json('Person not found with ID: ' . $id, 404);
+            return response()->json('Pessoa não encontrada, ID: ' . $id, 404);
         }
 
         $person = Converter::convertKeysToCamelCase($person);
@@ -89,8 +86,7 @@ class PersonService
         $data = Converter::convertKeysToSnakeCase($request->all());
         $person = $this->queryData($data);
 
-        if ($person) {
-            $person = Converter::convertKeysToCamelCase($person);
+        if ($person['data']) {
             return response()->json($person, 200);
         } else {
             return response()->json($person, 404);

@@ -6,8 +6,8 @@ use App\Services\PropertyService;
 
 class PropertyController extends BaseController
 {
-    public function __contruct(PropertyService $propertyService)
+    public function __construct(PropertyService $propertyService)
     {
-        parent::__contruct($propertyService);
+        parent::__construct($propertyService);
     }
 }
