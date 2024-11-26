@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->decimal('rent_amount', 10, 2);
             $table->enum('guarantee_type', array_column(GuaranteeType::cases(), 'name'));
-            $table->date('payment_date');
+            $table->integer('due_date');
             $table->enum('payment_date_type', array_column(PaymentDateType::cases(), 'name'));
             $table->enum('status', array_column(ContractStatus::cases(), 'name'));
             $table->uuid('owner_id');
@@ -31,7 +31,7 @@ return new class extends Migration
         });
 
         Schema::table('contracts', function(Blueprint $table) {
-            $table->uuid('parent_contract_id')->nullble();
+            $table->uuid('parent_contract_id')->nullable();
             $table->foreign('parent_contract_id')->references('id')->on('contracts')->onDelete('cascade');
         });
     }

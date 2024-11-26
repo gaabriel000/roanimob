@@ -30,16 +30,15 @@ class PropertyValidator extends BaseValidator
 
         return array_merge(
             [
-                'title.required' => 'O título é obrigatório.',
-                'title.alpha' => 'O título deve conter apenas letras.',
-                'title.max' => 'O título não pode exceder :max caracteres.',
-                'description.max' => 'A descrição não pode exceder :max caracteres.',
-                'status.required' => 'O status é obrigatório.',
-                'status.enum_key' => 'O status deve conter um valor válido: OPEN, RENTED, CONTRACT, DISABLED.',
-                'display_price.required' => 'O preço de exibição é obrigatório.',
-                'display_price.numeric' => 'O preço de exibição deve ser um número.',
-                'address.required' => 'É obrigatório um endereço para a propriedade',
-                'address.array' => 'O endereço deve ser um array.'
+                'title.required' => 'O campo title é obrigatório.',
+                'title.alpha' => 'O campo title deve conter apenas letras.',
+                'title.max' => 'O campo title não pode exceder :max caracteres.',
+                'description.max' => 'O campo description não pode exceder :max caracteres.',
+                'status.required' => 'O campo status é obrigatório.',
+                'display_price.required' => 'O campo price de exibição é obrigatório.',
+                'display_price.numeric' => 'O campo price de exibição deve ser um número.',
+                'address.required' => 'É obrigatório um array address para a propriedade',
+                'address.array' => 'O campo address deve ser um array.'
             ],
             $addressValidator->addressMessages()
         );

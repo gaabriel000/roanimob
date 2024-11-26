@@ -17,7 +17,7 @@ abstract class BaseRepository
     public function create(array $data): array
     {
         $item = $this->model->create($data);
-        return Converter::sortResponseId(Converter::objectToArray($item));
+        return Converter::convertKeysToCamelCase(Converter::sortResponseId(Converter::objectToArray($item)));
     }
 
     public function update($id, array $data)
@@ -26,7 +26,7 @@ abstract class BaseRepository
 
         if (isset($item)) {
             $item->update($data);
-            return Converter::objectToArray($item);
+            return Converter::convertKeysToCamelCase(Converter::objectToArray($item));
         }
 
         return null;
@@ -46,6 +46,7 @@ abstract class BaseRepository
 
     public function findByAttributes(array $attributes, array $relations = [], int $perPage = 10, int $page = 1): array
     {
+        $attributes = Converter::convertKeysToSnakeCase($attributes);
         $query = $this->model->query();
 
         $attributes = array_intersect_key(

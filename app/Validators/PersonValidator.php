@@ -36,7 +36,7 @@ class PersonValidator extends BaseValidator
 
         return array_merge(
             [
-                'type.required' => 'O campo type é obrigatório e deve conter apenas os valores OWNER ou TENANT.',
+                'type.required' => 'O campo type é obrigatório.',
                 'first_name.required' => 'O campo firstName é obrigatório.',
                 'first_name.alpha' => 'O campo firstName deve conter apenas letras.',
                 'first_name.max' => 'O campo firstName deve ter no máximo 255 caracteres.',
@@ -46,7 +46,7 @@ class PersonValidator extends BaseValidator
                 'email.email' => 'O campo email deve estar formatado corretamente: exemplo@mail.com',
                 'tax_id.required' => 'O campo taxId é obrigatório.',
                 'tax_id.numeric' => 'O campo taxId deve conter apenas números.',
-                'tax_type.required' => 'O campo taxType é obrigatório e deve ser um dos tipos válidos: CPF, CNPJ ou OTHER.',
+                'tax_type.required' => 'O campo taxType é obrigatório.',
                 'document_number.numeric' => 'O campo documentNumber deve conter apenas números.',
                 'birth_date.date_format' => 'O campo birthDate deve estar no formato yyyy-MM-dd.'
             ],

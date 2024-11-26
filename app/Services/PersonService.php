@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\PersonRepository;
 use App\Validators\PersonValidator;
-use App\Utils\Converter;
 
 class PersonService
 {
@@ -32,7 +31,6 @@ class PersonService
     private function createPersonAndAddress(array $data): array
     {
         $address_id = null;
-        $data = Converter::convertKeysToSnakeCase($data);
 
         if (isset($data['address'])) {
             $address_data = $data['address'];
@@ -47,7 +45,7 @@ class PersonService
             $person = $this->personRepository->create($data);
         }
 
-        return Converter::convertKeysToCamelCase($person);
+        return $person;
     }
 
     public function delete($id)
@@ -77,13 +75,12 @@ class PersonService
             return response()->json('Pessoa não encontrada, ID: ' . $id, 404);
         }
 
-        $person = Converter::convertKeysToCamelCase($person);
         return response()->json($person, 200);
     }
 
     public function query($request)
     {
-        $data = Converter::convertKeysToSnakeCase($request->all());
+        $data = $request->all();
         $person = $this->queryData($data);
 
         if ($person['data']) {

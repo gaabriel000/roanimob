@@ -3,15 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Contract extends Model
 {
+    use HasUuids;
+
+    protected $table = 'contracts';
+
     protected $fillable = [
         'start_date',
         'end_date',
         'rent_amount',
         'guarantee_type',
-        'payment_date',
+        'due_date',
         'payment_date_type',
         'status',
         'owner_id',
@@ -20,18 +26,23 @@ class Contract extends Model
         'parent_contract_id'
     ];
 
-    public function owner()
+    public function owner(): BelongsTo
     {
-        return $this->belongsTo(Owner::class);
+        return $this->belongsTo(Person::class, 'owner_id');
     }
 
-    public function tenant()
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsTo(Person::class, 'tenant_id');
     }
 
-    public function property()
+    public function property(): BelongsTo
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Property::class, 'property_id');
+    }
+
+    public function parentContract(): BelongsTo
+    {
+        return $this->belongsTo(Contract::class, 'parent_contract_id');
     }
 }

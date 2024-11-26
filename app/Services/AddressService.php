@@ -25,15 +25,8 @@ class AddressService
             return response()->json($validation_result['errors'], 400);
         }
 
-        $address = $this->createAddress($data);
-        return response()->json($address, 201);
-    }
-
-    public function createAddress(array $data): array
-    {
         $address = $this->addressRepository->create($data);
-
-        return Converter::convertKeysToCamelCase($address);
+        return response()->json($address, 201);
     }
 
     public function delete($id)
@@ -57,24 +50,18 @@ class AddressService
             return response()->json($validation_result['errors'], 400);
         }
 
-        $address = $this->updateAddress($id, $data);
+        $address = $this->addressRepository->update($id, $data);
 
         if (!$address) {
             return response()->json('Endereço não encontrado, ID: ' . $id, 404);
         }
 
-        $address = Converter::convertKeysToCamelCase($address);
         return response()->json($address, 200);
-    }
-
-    public function updateAddress($id, array $data): array
-    {
-        return $this->addressRepository->update($id, $data);
     }
 
     public function query($request)
     {
-        $data = Converter::convertKeysToSnakeCase($request->all());
+        $data = $request->all();
         $address = $this->queryData($data);
 
         if ($address['data']) {

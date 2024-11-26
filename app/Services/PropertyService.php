@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\PropertyRepository;
 use App\Validators\PropertyValidator;
-use App\Utils\Converter;
 
 class PropertyService
 {
@@ -41,7 +40,7 @@ class PropertyService
             $property = $this->propertyRepository->createWithAddress($data, $address_data);
         }
 
-        return Converter::convertKeysToCamelCase($property);
+        return $property;
     }
 
     public function delete($id)
@@ -71,13 +70,12 @@ class PropertyService
             return response()->json('Propriedade não encontrada, ID: ' . $id, 404);
         }
 
-        $property = Converter::convertKeysToCamelCase($property);
         return response()->json($property, 200);
     }
 
     public function query($request)
     {
-        $data = Converter::convertKeysToSnakeCase($request->all());
+        $data = $request->all();
         $property = $this->queryData($data);
 
         if ($property['data']) {
