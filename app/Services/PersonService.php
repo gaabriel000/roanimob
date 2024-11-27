@@ -78,9 +78,8 @@ class PersonService
         return response()->json($person, 200);
     }
 
-    public function query($request)
+    public function query($data)
     {
-        $data = $request->all();
         $person = $this->queryData($data);
 
         if ($person['data']) {

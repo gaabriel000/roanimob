@@ -40,47 +40,4 @@ class AddressValidator extends BaseValidator
             'country.required' => 'O campo country é obrigatório.',
         ];
     }
-
-    public function addressRules(): array
-    {
-        $rules = [];
-
-        foreach ($this->rules() as $key => $rule) {
-            if (is_array($rule)) {
-                foreach ($rule as $index => $r) {
-                    if ($r === 'required') {
-                        $rule[$index] = REQUIRED_WITH;
-                    }
-                }
-            } else {
-                $rule = preg_replace('/\brequired\b/', REQUIRED_WITH, $rule);
-            }
-
-            $rules["address.$key"] = $rule;
-        }
-
-        return $rules;
-    }
-
-    public function addressMessages(): array
-    {
-        $messages = [];
-        foreach ($this->messages() as $key => $message) {
-            $key = preg_replace('/\brequired\b/', REQUIRED_WITH, $key);
-
-            if (str_contains($key, REQUIRED_WITH)) {
-                preg_match('/^([^.]+)/', $key, $field);
-                $field_name = $field[1];
-
-                preg_match('/^([^:]+)/', $key, $rule);
-                $rule_name = $rule[1];
-
-                $messages["address.$rule_name"] = "O campo $field_name é obrigatório quando o objeto address está presente.";
-            } else {
-                $messages["address.$key"] = $message;
-            }
-        }
-
-        return $messages;
-    }
 }

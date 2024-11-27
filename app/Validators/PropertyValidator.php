@@ -20,7 +20,7 @@ class PropertyValidator extends BaseValidator
                 'display_price' => 'required|numeric',
                 'address' => 'required|array'
             ],
-            $addressValidator->addressRules()
+            $addressValidator->mergeRules('address')
         );
     }
 
@@ -40,7 +40,7 @@ class PropertyValidator extends BaseValidator
                 'address.required' => 'É obrigatório um array address para a propriedade',
                 'address.array' => 'O campo address deve ser um array.'
             ],
-            $addressValidator->addressMessages()
+            $addressValidator->mergeMessages('address')
         );
     }
 }

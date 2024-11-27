@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use App\Enums\ContractStatus;
 use App\Services\PersonService;
 use App\Services\PropertyService;
 use App\Validators\ContractValidator;
 use App\Repositories\ContractRepository;
+use App\Validators\ContractRenewValidator;
+
 
 class ContractService
 {
@@ -33,20 +36,32 @@ class ContractService
         return response()->json($contract, 201);
     }
 
-    public function renew($id)
+    public function renew($id, $request)
     {
+        $data = $request->all();
+
+        $validator = new ContractRenewValidator();
+        $validation_result = $validator->validate($data);
+
+        if (!$validation_result['valid']) {
+            return response()->json($validation_result['errors'], 400);
+        }
+
         $contract = $this->contractRepository->findById($id);
 
         if (!$contract) {
             return response()->json('Contrato não encontrado, ID: ' . $id, 404);
         }
 
+        $old_contract = $contract;
+        $old_contract['status'] = 'RENEW';
+
         unset($contract['id']);
         $contract['parent_contract_id'] = $id;
+        $contract['start_date'] = $data['start_date'];
+        $contract['end_date'] = $data['end_date'];
 
-        // adjust the date for equal period.
-
-        return $this->contractRepository->create($contract);
+        return $this->contractRepository->renew($old_contract, $contract);
     }
 
     public function delete($id)
@@ -63,7 +78,11 @@ class ContractService
     public function update($id, $request)
     {
         $data = $request->all();
-        $this->validate($data, true);
+        $validation_result = $this->validate($data, true);
+
+        if (!$validation_result['valid']) {
+            return response()->json($validation_result['errors'], $validation_result['status_code']);
+        }
 
         $contract = $this->contractRepository->update($id, $data);
 
@@ -75,9 +94,8 @@ class ContractService
         return response()->json($contract, 200);
     }
 
-    public function query($request)
+    public function query($data)
     {
-        $data = $request->all();
         $contract = $this->queryData($data);
 
         if ($contract['data']) {
@@ -89,7 +107,24 @@ class ContractService
 
     public function queryData(array &$data): array
     {
-        return $this->contractRepository->findByAttributes($data);
+        $query_relation = [];
+
+        if (isset($data['include_owner']) && $data['include_owner'] === 'true') {
+            array_push($query_relation, 'owner');
+        }
+
+        if (isset($data['include_tenant']) && $data['include_tenant'] === 'true') {
+            array_push($query_relation, 'tenant');
+        }
+
+        if (isset($data['include_property']) && $data['include_property'] === 'true') {
+            array_push($query_relation, 'property');
+        }
+
+        $per_page = isset($data['per_page']) ? $data['per_page'] : 10;
+        $page = isset($data['page']) ? $data['page'] : 1;
+
+        return $this->contractRepository->findByAttributes($data, $query_relation, $per_page, $page);
     }
 
     private function validate(&$data, $update = false)
@@ -108,25 +143,32 @@ class ContractService
     private function validateRelation(&$data)
     {
         $errors = [];
-        $owner_id = $data['owner_id'];
-        $owner = $this->personService->queryData(['id' => $owner_id, 'type' => 'OWNER'])['data'];
 
-        if (!$owner) {
-            $errors = array_merge($errors, ['ownerId' => "Proprietário não encontrado com ownerId: $owner_id"]);
+        if (isset($data['owner_id'])) {
+            $owner_id = $data['owner_id'];
+            $owner = $this->personService->queryData(['id' => $owner_id, 'type' => 'OWNER'])['data'];
+
+            if (!$owner) {
+                $errors = array_merge($errors, ['ownerId' => "Proprietário não encontrado com ownerId: $owner_id"]);
+            }
         }
 
-        $tenant_id = $data['tenant_id'];
-        $tenant = $this->personService->queryData(['id' => $tenant_id, 'type' => 'TENANT'])['data'];
-
-        if (!$tenant) {
-            $errors = array_merge($errors, ['tenantId' => "Inquilino não encontrado com tenantId: $tenant_id"]);
+        if (isset($data['tenant_id'])) {
+            $tenant_id = $data['tenant_id'];
+            $tenant = $this->personService->queryData(['id' => $tenant_id, 'type' => 'TENANT'])['data'];
+    
+            if (!$tenant) {
+                $errors = array_merge($errors, ['tenantId' => "Inquilino não encontrado com tenantId: $tenant_id"]);
+            }
         }
 
-        $property_id = $data['property_id'];
-        $property = $this->propertyService->queryData(['id' => $property_id])['data'];
-
-        if (!$property) {
-            $errors = array_merge($errors, ['propertyId' => "Propriedade não encontrada com propertyId: $property_id"]);
+        if (isset($data['property_id'])) {
+            $property_id = $data['property_id'];
+            $property = $this->propertyService->queryData(['id' => $property_id])['data'];
+    
+            if (!$property) {
+                $errors = array_merge($errors, ['propertyId' => "Propriedade não encontrada com propertyId: $property_id"]);
+            }
         }
 
         if ($errors) {

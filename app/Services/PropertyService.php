@@ -73,9 +73,8 @@ class PropertyService
         return response()->json($property, 200);
     }
 
-    public function query($request)
+    public function query($data)
     {
-        $data = $request->all();
         $property = $this->queryData($data);
 
         if ($property['data']) {

@@ -46,7 +46,6 @@ abstract class BaseRepository
 
     public function findByAttributes(array $attributes, array $relations = [], int $perPage = 10, int $page = 1): array
     {
-        $attributes = Converter::convertKeysToSnakeCase($attributes);
         $query = $this->model->query();
 
         $attributes = array_intersect_key(

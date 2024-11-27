@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Utils\Converter;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -31,6 +32,7 @@ abstract class BaseController extends Controller
 
     public function query(Request $request)
     {
-        return $this->service->query($request);
+        $data = Converter::convertKeysToSnakeCase($request->all());
+        return $this->service->query($data);
     }
 }

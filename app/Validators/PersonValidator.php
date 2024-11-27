@@ -26,7 +26,7 @@ class PersonValidator extends BaseValidator
                 'birth_date' => 'date_format:Y-m-d',
                 'address' => 'nullable|array'
             ],
-            $addressValidator->addressRules()
+            $addressValidator->mergeRules('address')
         );
     }
 
@@ -50,7 +50,7 @@ class PersonValidator extends BaseValidator
                 'document_number.numeric' => 'O campo documentNumber deve conter apenas números.',
                 'birth_date.date_format' => 'O campo birthDate deve estar no formato yyyy-MM-dd.'
             ],
-            $addressValidator->addressMessages()
+            $addressValidator->mergeMessages('address')
         );
     }
 }

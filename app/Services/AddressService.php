@@ -59,9 +59,8 @@ class AddressService
         return response()->json($address, 200);
     }
 
-    public function query($request)
+    public function query($data)
     {
-        $data = $request->all();
         $address = $this->queryData($data);
 
         if ($address['data']) {
