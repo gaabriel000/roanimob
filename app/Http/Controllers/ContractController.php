@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ContractService;
 use Illuminate\Http\Request;
+use App\Utils\Converter;
 
 class ContractController extends BaseController
 {
@@ -14,7 +15,8 @@ class ContractController extends BaseController
 
     public function renew (string $id, Request $request)
     {
-        return $this->service->renew($id, $request);
+        $data = Converter::convertKeysToSnakeCase($request->all());
+        return $this->service->renew($id, $data);
     }
 }
 

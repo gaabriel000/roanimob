@@ -17,7 +17,7 @@ abstract class BaseRepository
     public function create(array $data): array
     {
         $item = $this->model->create($data);
-        return Converter::convertKeysToCamelCase(Converter::sortResponseId(Converter::objectToArray($item)));
+        return Converter::sortResponseId(Converter::objectToArray($item));
     }
 
     public function update($id, array $data)
@@ -26,7 +26,7 @@ abstract class BaseRepository
 
         if (isset($item)) {
             $item->update($data);
-            return Converter::convertKeysToCamelCase(Converter::objectToArray($item));
+            return Converter::objectToArray($item);
         }
 
         return null;
@@ -72,7 +72,7 @@ abstract class BaseRepository
                 }
             }
 
-            $item = Converter::convertKeysToCamelCase(Converter::objectToArray($item));
+            $item = Converter::objectToArray($item);
         }
 
         return [

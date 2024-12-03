@@ -3,7 +3,6 @@
 namespace App\Validators;
 
 use Illuminate\Support\Facades\Validator;
-use App\Utils\Converter;
 
 abstract class BaseValidator
 {
@@ -13,7 +12,6 @@ abstract class BaseValidator
 
     public function validate(array &$data, bool $is_update = false): array
     {
-        $data = Converter::convertKeysToSnakeCase($data);
         $rules = $this->rules();
         $messages = $this->messages();
 
@@ -26,7 +24,7 @@ abstract class BaseValidator
         if ($validator->fails()) {
             return [
                 'valid' => false,
-                'errors' => Converter::convertKeysToCamelCase($validator->errors()->toArray())
+                'errors' => $validator->errors()->toArray()
             ];
         }
 

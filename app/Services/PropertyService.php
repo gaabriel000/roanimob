@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Repositories\PropertyRepository;
 use App\Validators\PropertyValidator;
 
-class PropertyService
+class PropertyService extends BaseService
 {
     private $propertyRepository;
 
@@ -14,18 +14,17 @@ class PropertyService
         $this->propertyRepository = $propertyRepository;
     }
 
-    public function create($request)
+    public function create($data)
     {
-        $data = $request->all();
         $validator = new PropertyValidator();
         $validation_result = $validator->validate($data);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], 400);
+            return $this->response($validation_result['errors'], 400);
         }
 
         $property = $this->createPropertyAndAddress($data);
-        return response()->json($property, 201);
+        return $this->response($property, 201);
     }
 
     private function createPropertyAndAddress(array $data): array
@@ -48,29 +47,28 @@ class PropertyService
         $result = $this->propertyRepository->delete($id);
 
         if (!$result) {
-            return response()->json('Propriedade não encontrada ou já removida, ID: ' . $id, 404);
+            return $this->response('Propriedade não encontrada ou já removida, ID: ' . $id, 404);
         }
 
-        return response()->json('Propriedade removida com sucesso, ID: ' . $id, 200);
+        return $this->response('Propriedade removida com sucesso, ID: ' . $id, 200);
     }
 
-    public function update($id, $request)
+    public function update($id, $data)
     {
-        $data = $request->all();
         $validator = new PropertyValidator();
         $validation_result = $validator->validate($data, true);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], 400);
+            return $this->response($validation_result['errors'], 400);
         }
 
         $property = $this->propertyRepository->update($id, $data);
 
         if (!$property) {
-            return response()->json('Propriedade não encontrada, ID: ' . $id, 404);
+            return $this->response('Propriedade não encontrada, ID: ' . $id, 404);
         }
 
-        return response()->json($property, 200);
+        return $this->response($property, 200);
     }
 
     public function query($data)
@@ -78,9 +76,9 @@ class PropertyService
         $property = $this->queryData($data);
 
         if ($property['data']) {
-            return response()->json($property, 200);
+            return $this->response($property, 200);
         } else {
-            return response()->json($property, 404);
+            return $this->response($property, 404);
         }
     }
 

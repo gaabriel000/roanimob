@@ -17,22 +17,41 @@ abstract class BaseController extends Controller
 
     public function create(Request $request)
     {
-        return $this->service->create($request);
+        $data = Converter::convertKeysToSnakeCase($request->all());
+        $response = $this->service->create($data);
+
+        $this->convertKeysToSnakeCase($response['data']);
+        return response()->json($response['data'], $response['code']);
     }
 
     public function delete(string $id)
     {
-        return $this->service->delete($id);
+        $response = $this->service->delete($id);
+        return response()->json($response['data'], $response['code']);
     }
 
     public function update(string $id, Request $request)
     {
-        return $this->service->update($id, $request);
+        $data = Converter::convertKeysToSnakeCase($request->all());
+        $response = $this->service->update($id, $data);
+
+        $this->convertKeysToSnakeCase($response['data']);
+        return response()->json($response['data'], $response['code']);
     }
 
     public function query(Request $request)
     {
         $data = Converter::convertKeysToSnakeCase($request->all());
-        return $this->service->query($data);
+        $response = $this->service->query($data);
+
+        $this->convertKeysToSnakeCase($response['data']);
+        return response()->json($response['data'], $response['code']);
+    }
+
+    private function convertKeysToSnakeCase(&$data)
+    {
+        if (is_array($data)) {
+            $data = Converter::convertKeysToCamelCase($data);
+        }
     }
 }

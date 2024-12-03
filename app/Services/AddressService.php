@@ -4,9 +4,8 @@ namespace App\Services;
 
 use App\Repositories\AddressRepository;
 use App\Validators\AddressValidator;
-use App\Utils\Converter;
 
-class AddressService
+class AddressService extends BaseService
 {
     private AddressRepository $addressRepository;
 
@@ -15,18 +14,17 @@ class AddressService
         $this->addressRepository = $addressRepository;
     }
 
-    public function create($request)
+    public function create($data)
     {
-        $data = $request->all();
         $validator = new AddressValidator();
         $validation_result = $validator->validate($data);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], 400);
+            return $this->response($validation_result['errors'], 400);
         }
 
         $address = $this->addressRepository->create($data);
-        return response()->json($address, 201);
+        return $this->response($address, 201);
     }
 
     public function delete($id)
@@ -34,29 +32,28 @@ class AddressService
         $result = $this->addressRepository->delete($id);
 
         if (!$result) {
-            return response()->json('Endereço não encontrado ou já removido, ID: ' . $id, 404);
+            return $this->response('Endereço não encontrado ou já removido, ID: ' . $id, 404);
         }
 
-        return response()->json('Endereço removido com sucesso, ID: ' . $id, 200);
+        return $this->response('Endereço removido com sucesso, ID: ' . $id, 200);
     }
 
-    public function update($id, $request)
+    public function update($id, $data)
     {
-        $data = $request->all();
         $validator = new AddressValidator();
         $validation_result = $validator->validate($data, true);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], 400);
+            return $this->response($validation_result['errors'], 400);
         }
 
         $address = $this->addressRepository->update($id, $data);
 
         if (!$address) {
-            return response()->json('Endereço não encontrado, ID: ' . $id, 404);
+            return $this->response('Endereço não encontrado, ID: ' . $id, 404);
         }
 
-        return response()->json($address, 200);
+        return $this->response($address, 200);
     }
 
     public function query($data)
@@ -64,9 +61,9 @@ class AddressService
         $address = $this->queryData($data);
 
         if ($address['data']) {
-            return response()->json($address, 200);
+            return $this->response($address, 200);
         } else {
-            return response()->json($address, 404);
+            return $this->response($address, 404);
         }
     }
 

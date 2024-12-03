@@ -2,15 +2,13 @@
 
 namespace App\Services;
 
-use App\Enums\ContractStatus;
 use App\Services\PersonService;
 use App\Services\PropertyService;
 use App\Validators\ContractValidator;
 use App\Repositories\ContractRepository;
 use App\Validators\ContractRenewValidator;
 
-
-class ContractService
+class ContractService extends BaseService
 {
     private PersonService $personService;
     private PropertyService $propertyService;
@@ -23,34 +21,31 @@ class ContractService
         $this->propertyService = $propertyService;
     }
 
-    public function create($request)
+    public function create($data)
     {
-        $data = $request->all();
         $validation_result = $this->validate($data);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], $validation_result['status_code']);
+            return $this->response($validation_result['errors'], $validation_result['status_code']);
         }
 
         $contract = $this->contractRepository->create($data);
-        return response()->json($contract, 201);
+        return $this->response($contract, 201);
     }
 
-    public function renew($id, $request)
+    public function renew($id, $data)
     {
-        $data = $request->all();
-
         $validator = new ContractRenewValidator();
         $validation_result = $validator->validate($data);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], 400);
+            return $this->response($validation_result['errors'], 400);
         }
 
         $contract = $this->contractRepository->findById($id);
 
         if (!$contract) {
-            return response()->json('Contrato não encontrado, ID: ' . $id, 404);
+            return $this->response('Contrato não encontrado, ID: ' . $id, 404);
         }
 
         $old_contract = $contract;
@@ -69,29 +64,28 @@ class ContractService
         $result = $this->contractRepository->delete($id);
 
         if (!$result) {
-            return response()->json('Contrato não encontrado ou já removido, ID: ' . $id, 404);
+            return $this->response('Contrato não encontrado ou já removido, ID: ' . $id, 404);
         }
 
-        return response()->json('Contrato removido com sucesso, ID: ' . $id, 200);
+        return $this->response('Contrato removido com sucesso, ID: ' . $id, 200);
     }
 
-    public function update($id, $request)
+    public function update($id, $data)
     {
-        $data = $request->all();
         $validation_result = $this->validate($data, true);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], $validation_result['status_code']);
+            return $this->response($validation_result['errors'], $validation_result['status_code']);
         }
 
         $contract = $this->contractRepository->update($id, $data);
 
         if (!$contract) {
-            return response()->json('Contrato não encontrado, ID: ' . $id, 404);
+            return $this->response('Contrato não encontrado, ID: ' . $id, 404);
         }
 
         $contract = $this->contractRepository->update($id, $data);
-        return response()->json($contract, 200);
+        return $this->response($contract, 200);
     }
 
     public function query($data)
@@ -99,9 +93,9 @@ class ContractService
         $contract = $this->queryData($data);
 
         if ($contract['data']) {
-            return response()->json($contract, 200);
+            return $this->response($contract, 200);
         } else {
-            return response()->json($contract, 404);
+            return $this->response($contract, 404);
         }
     }
 

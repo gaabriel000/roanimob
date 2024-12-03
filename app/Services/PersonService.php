@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Repositories\PersonRepository;
 use App\Validators\PersonValidator;
 
-class PersonService
+class PersonService extends BaseService
 {
     private PersonRepository $personRepository;
 
@@ -14,18 +14,17 @@ class PersonService
         $this->personRepository = $personRepository;
     }
 
-    public function create($request)
+    public function create($data)
     {
-        $data = $request->all();
         $validator = new PersonValidator();
         $validation_result = $validator->validate($data);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], 400);
+            return $this->response($validation_result['errors'], 400);
         }
 
         $person = $this->createPersonAndAddress($data);
-        return response()->json($person, 201);
+        return $this->response($person, 201);
     }
 
     private function createPersonAndAddress(array $data): array
@@ -53,29 +52,28 @@ class PersonService
         $result = $this->personRepository->delete($id);
 
         if (!$result) {
-            return response()->json('Pessoa não encontrada ou já removida, ID: ' . $id, 404);
+            return $this->response('Pessoa não encontrada ou já removida, ID: ' . $id, 404);
         }
 
-        return response()->json('Pessoa removida com sucesso, ID: ' . $id, 200);
+        return $this->response('Pessoa removida com sucesso, ID: ' . $id, 200);
     }
 
-    public function update($id, $request)
+    public function update($id, $data)
     {
-        $data = $request->all();
         $validator = new PersonValidator();
         $validation_result = $validator->validate($data, true);
 
         if (!$validation_result['valid']) {
-            return response()->json($validation_result['errors'], 400);
+            return $this->response($validation_result['errors'], 400);
         }
 
         $person = $this->personRepository->update($id, $data);
 
         if (!$person) {
-            return response()->json('Pessoa não encontrada, ID: ' . $id, 404);
+            return $this->response('Pessoa não encontrada, ID: ' . $id, 404);
         }
 
-        return response()->json($person, 200);
+        return $this->response($person, 200);
     }
 
     public function query($data)
@@ -83,9 +81,9 @@ class PersonService
         $person = $this->queryData($data);
 
         if ($person['data']) {
-            return response()->json($person, 200);
+            return $this->response($person, 200);
         } else {
-            return response()->json($person, 404);
+            return $this->response($person, 404);
         }
     }
 
