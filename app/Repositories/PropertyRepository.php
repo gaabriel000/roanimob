@@ -33,11 +33,24 @@ class PropertyRepository extends BaseRepository
         });
     }
 
-    private function createPropertyConfigureAddressData(array $address, array $propertyData): array
+    public function UpdateAndUpdateAddress(array $propertyData, array $addressData, string $propertyId, string $addressId): array
+    {
+        return DB::transaction(function () use ($propertyData, $addressData, $propertyId, $addressId) {
+            $address = $this->addressRepository->update($addressId, $addressData);
+            return $this->createPropertyConfigureAddressData($address, $propertyData, $propertyId, true);
+        });
+    }
+
+    private function createPropertyConfigureAddressData(array $address, array $propertyData, $id = null, bool $update = false): array
     {
         $propertyData['address_id'] = $address['id'];
 
-        $property = $this->create($propertyData);
+        if ($update) {
+            $property = $this->update($id, $propertyData);
+        } else {
+            $property = $this->create($propertyData);
+        }
+
         $property['address'] = $address;
         unset($property['address_id']);
 

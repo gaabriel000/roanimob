@@ -21,7 +21,7 @@ class PersonRepository extends BaseRepository
     {
         return DB::transaction(function () use ($personData, $addressData) {
             $address = $this->addressRepository->create($addressData);
-            return $this->createPersonConfigureAddressData($address, $personData);
+            return $this->createOrUpdatePersonConfigureAddressData($address, $personData);
         });
     }
 
@@ -29,15 +29,36 @@ class PersonRepository extends BaseRepository
     {
         return DB::transaction(function () use ($personData, $addressData, $id) {
             $address = $this->addressRepository->update($id, $addressData);
-            return $this->createPersonConfigureAddressData($address, $personData);
+            return $this->createOrUpdatePersonConfigureAddressData($address, $personData);
         });
     }
 
-    private function createPersonConfigureAddressData(array $address, array $personData): array
+    public function UpdateAndUpdateAddress(array $personData, array $addressData, string $personId, string $addressId): array
+    {
+        return DB::transaction(function () use ($personData, $addressData, $personId, $addressId) {
+            $address = $this->addressRepository->update($addressId, $addressData);
+            return $this->createOrUpdatePersonConfigureAddressData($address, $personData, $personId, true);
+        });
+    }
+
+    public function UpdateAndCreateAddress(array $personData, array $addressData, string $personId): array
+    {
+        return DB::transaction(function () use ($personData, $addressData, $personId) {
+            $address = $this->addressRepository->create($addressData);
+            return $this->createOrUpdatePersonConfigureAddressData($address, $personData, $personId, true);
+        });
+    }
+
+    private function createOrUpdatePersonConfigureAddressData(array $address, array $personData, $id = null, bool $update = false): array
     {
         $personData['address_id'] = $address['id'];
 
-        $person = $this->create($personData);
+        if ($update) {
+            $person = $this->update($id, $personData);
+        } else {
+            $person = $this->create($personData);
+        }
+
         $person['address'] = $address;
         unset($person['address_id']);
 

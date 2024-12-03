@@ -62,13 +62,33 @@ class PropertyService extends BaseService
             return $this->response($validation_result['errors'], 400);
         }
 
-        $property = $this->propertyRepository->update($id, $data);
+        $property = $this->updateData($id, $data);
 
         if (!$property) {
-            return $this->response('Propriedade não encontrada, ID: ' . $id, 404);
+            return $this->response('Propriedade ou endereço não encontrados, ID: ' . $id, 404);
         }
 
         return $this->response($property, 200);
+    }
+
+    public function updateData($id, $data)
+    {
+        $address_id = null;
+
+        if (isset($data['address'])) {
+            $address_data = $data['address'];
+
+            if (isset($address_data['id'])) {
+                $address_id = $address_data['id'];
+                $property = $this->propertyRepository->UpdateAndUpdateAddress($data, $address_data, $id, $address_id);
+            } else {
+                return null;
+            }
+        } else {
+            $property = $this->propertyRepository->update($id, $data);
+        }
+
+        return $property;
     }
 
     public function query($data)

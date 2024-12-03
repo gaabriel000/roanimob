@@ -67,13 +67,33 @@ class PersonService extends BaseService
             return $this->response($validation_result['errors'], 400);
         }
 
-        $person = $this->personRepository->update($id, $data);
+        $person = $this->updateData($id, $data);
 
         if (!$person) {
             return $this->response('Pessoa não encontrada, ID: ' . $id, 404);
         }
 
         return $this->response($person, 200);
+    }
+
+    public function updateData($id, $data)
+    {
+        $address_id = null;
+
+        if (isset($data['address'])) {
+            $address_data = $data['address'];
+
+            if (isset($address_data['id'])) {
+                $address_id = $address_data['id'];
+                $person = $this->personRepository->UpdateAndUpdateAddress($data, $address_data, $id, $address_id);
+            } else {
+                $person = $this->personRepository->UpdateAndCreateAddress($data, $address_data, $id);
+            }
+        } else {
+            $person = $this->personRepository->update($id, $data);
+        }
+
+        return $person;
     }
 
     public function query($data)
