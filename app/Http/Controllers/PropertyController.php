@@ -10,4 +10,12 @@ class PropertyController extends BaseController
     {
         parent::__construct($propertyService);
     }
+
+    public function contract (string $id)
+    {
+        $response = $this->service->contract($id);
+
+        $this->convertKeysToSnakeCase($response['data']);
+        return response()->json($response['data'], $response['code']);
+    }
 }

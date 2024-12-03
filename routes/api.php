@@ -27,6 +27,7 @@ Route::prefix('v1')->group(function () {
     Route::delete(PROPERTY . ID, [PropertyController::class, 'delete']);
     Route::get(PROPERTY, [PropertyController::class, 'query']);
     Route::patch(PROPERTY . ID, [PropertyController::class, 'update']);
+    Route::get(PROPERTY . ID . CONTRACT, [PropertyController::class, 'contract']);
 
     Route::post(CONTRACT, [ContractController::class, 'create']);
     Route::post(CONTRACT . ID, [ContractController::class, 'renew']);

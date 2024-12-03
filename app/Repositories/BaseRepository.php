@@ -84,4 +84,16 @@ abstract class BaseRepository
             'lastPage' => $result->lastPage(),
         ];
     }
+
+    public function findById($id)
+    {
+        $query = $this->model->query();
+        $data = $query->find($id);
+
+        if (!$data) {
+            return null;
+        } else {
+            return Converter::objectToArray($query->find($id));
+        }
+    }
 }

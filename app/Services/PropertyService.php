@@ -110,4 +110,21 @@ class PropertyService extends BaseService
 
         return $this->propertyRepository->findByAttributes($data, $query_relation, $per_page, $page);
     }
+
+    public function contract(string $id)
+    {
+        $property = $this->propertyRepository->findById($id);
+
+        if (!$property) {
+            return $this->response('Propriedade não encontrada', 404);
+        }
+
+        $contract = $this->propertyRepository->findActiveContract($id);
+
+        if (!$contract) {
+            return $this->response('Contrato não encontrado para a propriedade.', 204);
+        } else {
+            return $this->response('Já existe um contrato ativo para esta propriedade.', 409);
+        }
+    }
 }

@@ -13,12 +13,6 @@ class ContractRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function findById($id)
-    {
-        $query = $this->model->query();
-        return Converter::objectToArray($query->find($id));
-    }
-
     public function renew(array $old_data, array $data)
     {
         return DB::transaction(function () use ($old_data, $data) {

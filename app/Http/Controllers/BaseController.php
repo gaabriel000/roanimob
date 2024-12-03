@@ -48,7 +48,7 @@ abstract class BaseController extends Controller
         return response()->json($response['data'], $response['code']);
     }
 
-    private function convertKeysToSnakeCase(&$data)
+    protected function convertKeysToSnakeCase(&$data)
     {
         if (is_array($data)) {
             $data = Converter::convertKeysToCamelCase($data);

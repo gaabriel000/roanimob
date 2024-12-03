@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\DB;
 class PropertyRepository extends BaseRepository
 {
     private AddressRepository $addressRepository;
+    private ContractRepository $contractRepository;
 
-    public function __construct(Property $model, AddressRepository $addressRepository)
+    public function __construct(Property $model, AddressRepository $addressRepository, ContractRepository $contractRepository)
     {
         parent::__construct($model);
         $this->addressRepository = $addressRepository;
+        $this->contractRepository = $contractRepository;
     }
 
     public function createWithAddress(array $propertyData, array $addressData): array
@@ -39,6 +41,12 @@ class PropertyRepository extends BaseRepository
             $address = $this->addressRepository->update($addressId, $addressData);
             return $this->createPropertyConfigureAddressData($address, $propertyData, $propertyId, true);
         });
+    }
+
+    public function findActiveContract(string $id)
+    {
+        $contract = $this->contractRepository->findByAttributes(['property_id' => $id]);
+        return $contract['data'] ? $contract['data'] : null;
     }
 
     private function createPropertyConfigureAddressData(array $address, array $propertyData, $id = null, bool $update = false): array
